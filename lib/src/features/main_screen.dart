@@ -8,10 +8,19 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final TextEditingController _zipController = TextEditingController();
+  Future<String>? _searchedCityFuture;
+
   @override
-  void initState() {
-    super.initState();
-    // TODO: initiate controllers
+  void dispose() {
+    _zipController.dispose();
+    super.dispose();
+  }
+
+  void _searchCity() {
+    setState(() {
+      _searchedCityFuture = getCityFromZip(_zipController.text);
+    });
   }
 
   @override
@@ -21,32 +30,40 @@ class _MainScreenState extends State<MainScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const TextField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Postleitzahl"),
+              TextField(
+                controller: _zipController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Postleitzahl",
+                ),
+                keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 32),
               OutlinedButton(
-                onPressed: () {
-                  // TODO: implementiere Suche
-                },
+                onPressed: _searchCity,
                 child: const Text("Suche"),
               ),
               const SizedBox(height: 32),
-              Text("Ergebnis: Noch keine PLZ gesucht",
-                  style: Theme.of(context).textTheme.labelLarge),
+              FutureBuilder<String>(
+                future: _searchedCityFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Fehler: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    return Text('Ergebnis: ${snapshot.data}');
+                  }
+                  return const Text("Ergebnis: Noch keine PLZ gesucht");
+                },
+              ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    // TODO: dispose controllers
-    super.dispose();
   }
 
   Future<String> getCityFromZip(String zip) async {
