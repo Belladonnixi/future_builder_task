@@ -20,6 +20,7 @@ class _MainScreenState extends State<MainScreen> {
   void _searchCity() {
     setState(() {
       _searchedCityFuture = getCityFromZip(_zipController.text);
+      _zipController.clear();
     });
   }
 
@@ -36,14 +37,14 @@ class _MainScreenState extends State<MainScreen> {
                 controller: _zipController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: "Postleitzahl",
+                  labelText: 'Postleitzahl',
                 ),
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 32),
               OutlinedButton(
                 onPressed: _searchCity,
-                child: const Text("Suche"),
+                child: const Text('Suche'),
               ),
               const SizedBox(height: 32),
               FutureBuilder<String>(
@@ -56,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
                   } else if (snapshot.hasData) {
                     return Text('Ergebnis: ${snapshot.data}');
                   }
-                  return const Text("Ergebnis: Noch keine PLZ gesucht");
+                  return const Text('Ergebnis: Noch keine PLZ gesucht');
                 },
               ),
             ],
