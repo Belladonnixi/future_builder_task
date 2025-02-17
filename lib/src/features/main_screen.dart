@@ -72,16 +72,18 @@ class _MainScreenState extends State<MainScreen> {
     await Future.delayed(const Duration(seconds: 3));
 
     switch (zip) {
-      case "10115":
+      case '':
+        return 'Keine Postleitzahl eingegeben';
+      case '10115':
         return 'Berlin';
-      case "20095":
+      case '20095':
         return 'Hamburg';
-      case "80331":
+      case '80331':
         return 'München';
-      case "50667":
+      case '50667':
         return 'Köln';
-      case "60311":
-      case "60313":
+      case '60311':
+      case '60313':
         return 'Frankfurt am Main';
       default:
         return 'Unbekannte Stadt';
